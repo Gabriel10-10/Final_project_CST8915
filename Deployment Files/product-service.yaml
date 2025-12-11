@@ -1,0 +1,129 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "3"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"product-service","namespace":"default"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"product-service"}},"template":{"metadata":{"labels":{"app":"product-service"}},"spec":{"containers":[{"env":[{"name":"AI_SERVICE_URL","value":"http://ai-service:5001/"}],"image":"gabriel1010/product-service-l8:latest","livenessProbe":{"failureThreshold":5,"httpGet":{"path":"/health","port":3002},"initialDelaySeconds":3,"periodSeconds":3},"name":"product-service","ports":[{"containerPort":3002}],"readinessProbe":{"failureThreshold":3,"httpGet":{"path":"/health","port":3002},"initialDelaySeconds":3,"periodSeconds":5},"resources":{"limits":{"cpu":"2m","memory":"20Mi"},"requests":{"cpu":"1m","memory":"1Mi"}}}],"nodeSelector":{"kubernetes.io/os":"linux"}}}}}
+  creationTimestamp: "2025-12-11T02:33:09Z"
+  generation: 3
+  name: product-service
+  namespace: default
+  resourceVersion: "25523"
+  uid: 5663fce6-2e50-436d-9021-9dbb6fd255b0
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: product-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/restartedAt: "2025-12-11T03:24:02Z"
+      creationTimestamp: null
+      labels:
+        app: product-service
+    spec:
+      containers:
+      - env:
+        - name: AI_SERVICE_URL
+          value: http://ai-service:5001/
+        image: gabriel1010/product-service-l9:latest
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /health
+            port: 3002
+            scheme: HTTP
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: product-service
+        ports:
+        - containerPort: 3002
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 3002
+            scheme: HTTP
+          initialDelaySeconds: 3
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 2m
+            memory: 20Mi
+          requests:
+            cpu: 1m
+            memory: 1Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        kubernetes.io/os: linux
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2025-12-11T02:34:05Z"
+    lastUpdateTime: "2025-12-11T02:34:05Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2025-12-11T02:33:09Z"
+    lastUpdateTime: "2025-12-11T03:24:20Z"
+    message: ReplicaSet "product-service-694d8bf4c5" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 3
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"product-service","namespace":"default"},"spec":{"ports":[{"name":"http","port":3002,"targetPort":3002}],"selector":{"app":"product-service"},"type":"ClusterIP"}}
+  creationTimestamp: "2025-12-11T02:33:09Z"
+  name: product-service
+  namespace: default
+  resourceVersion: "10296"
+  uid: b1b3d11f-c8d0-47fc-9cc2-28c854451db6
+spec:
+  clusterIP: 10.0.175.87
+  clusterIPs:
+  - 10.0.175.87
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: http
+    port: 3002
+    protocol: TCP
+    targetPort: 3002
+  selector:
+    app: product-service
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

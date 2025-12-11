@@ -1,0 +1,149 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "3"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"makeline-service","namespace":"default"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"makeline-service"}},"template":{"metadata":{"labels":{"app":"makeline-service"}},"spec":{"containers":[{"env":[{"name":"ORDER_QUEUE_URI","value":"amqp://rabbitmq-0.rabbitmq:5672"},{"name":"ORDER_QUEUE_USERNAME","value":"username"},{"name":"ORDER_QUEUE_PASSWORD","value":"password"},{"name":"ORDER_QUEUE_NAME","value":"orders"},{"name":"ORDER_DB_URI","value":"mongodb://mongodb-2.mongodb:27017,mongodb-1.mongodb:27017,mongodb-0.mongodb:27017/orderdb?replicaSet=rs0"},{"name":"ORDER_DB_NAME","value":"orderdb"},{"name":"ORDER_DB_COLLECTION_NAME","value":"orders"}],"image":"gabriel1010/makeline-service-l8:latest","livenessProbe":{"failureThreshold":5,"httpGet":{"path":"/health","port":3001},"initialDelaySeconds":3,"periodSeconds":3},"name":"makeline-service","ports":[{"containerPort":3001}],"readinessProbe":{"failureThreshold":3,"httpGet":{"path":"/health","port":3001},"initialDelaySeconds":3,"periodSeconds":5},"resources":{"limits":{"cpu":"5m","memory":"20Mi"},"requests":{"cpu":"1m","memory":"6Mi"}},"startupProbe":{"failureThreshold":10,"httpGet":{"path":"/health","port":3001},"periodSeconds":5}}],"nodeSelector":{"kubernetes.io/os":"linux"}}}}}
+  creationTimestamp: "2025-12-11T02:33:08Z"
+  generation: 3
+  name: makeline-service
+  namespace: default
+  resourceVersion: "27267"
+  uid: eb720b67-a9ca-49d2-abe8-69165cb91443
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: makeline-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/restartedAt: "2025-12-11T03:20:32Z"
+      creationTimestamp: null
+      labels:
+        app: makeline-service
+    spec:
+      containers:
+      - env:
+        - name: ORDER_QUEUE_URI
+          value: amqp://rabbitmq-0.rabbitmq:5672
+        - name: ORDER_QUEUE_USERNAME
+          value: username
+        - name: ORDER_QUEUE_PASSWORD
+          value: password
+        - name: ORDER_QUEUE_NAME
+          value: orders
+        - name: ORDER_DB_URI
+          value: mongodb://mongodb-2.mongodb:27017,mongodb-1.mongodb:27017,mongodb-0.mongodb:27017/orderdb?replicaSet=rs0
+        - name: ORDER_DB_NAME
+          value: orderdb
+        - name: ORDER_DB_COLLECTION_NAME
+          value: orders
+        image: gabriel1010/makeline-service-l9:latest
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /health
+            port: 3001
+            scheme: HTTP
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: makeline-service
+        ports:
+        - containerPort: 3001
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 3001
+            scheme: HTTP
+          initialDelaySeconds: 3
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 5m
+            memory: 20Mi
+          requests:
+            cpu: 1m
+            memory: 6Mi
+        startupProbe:
+          failureThreshold: 10
+          httpGet:
+            path: /health
+            port: 3001
+            scheme: HTTP
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        kubernetes.io/os: linux
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  conditions:
+  - lastTransitionTime: "2025-12-11T02:33:08Z"
+    lastUpdateTime: "2025-12-11T02:33:08Z"
+    message: Deployment does not have minimum availability.
+    reason: MinimumReplicasUnavailable
+    status: "False"
+    type: Available
+  - lastTransitionTime: "2025-12-11T03:30:33Z"
+    lastUpdateTime: "2025-12-11T03:30:33Z"
+    message: ReplicaSet "makeline-service-55c96b67b7" has timed out progressing.
+    reason: ProgressDeadlineExceeded
+    status: "False"
+    type: Progressing
+  observedGeneration: 3
+  replicas: 2
+  unavailableReplicas: 2
+  updatedReplicas: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"makeline-service","namespace":"default"},"spec":{"ports":[{"name":"http","port":3001,"targetPort":3001}],"selector":{"app":"makeline-service"},"type":"ClusterIP"}}
+  creationTimestamp: "2025-12-11T02:33:09Z"
+  name: makeline-service
+  namespace: default
+  resourceVersion: "10272"
+  uid: 92c6d8c6-e447-4db7-9cf7-9ac727707374
+spec:
+  clusterIP: 10.0.15.140
+  clusterIPs:
+  - 10.0.15.140
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: http
+    port: 3001
+    protocol: TCP
+    targetPort: 3001
+  selector:
+    app: makeline-service
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
