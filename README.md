@@ -1,7 +1,3 @@
-## Student Information
-
-- **Student Name:** `DAMIS GABRIEL MANFOUO`  
-- **Student ID:** `041204270`
 
 ## 1. Explanation of the Application
 
